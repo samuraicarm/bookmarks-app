@@ -1,38 +1,17 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import AddBookmark from './AddBookmark/AddBookmark';
+import EditBookmark from './EditBookmark';
 import BookmarkList from './BookmarkList/BookmarkList';
+import BookmarksContext from './BookmarksContext'
 import Nav from './Nav/Nav';
 import config from './config';
 import './App.css';
 
-const bookmarks = [
-  // {
-  //   id: 0,
-  //   title: 'Google',
-  //   url: 'http://www.google.com',
-  //   rating: '3',
-  //   desc: 'Internet-related services and products.'
-  // },
-  // {
-  //   id: 1,
-  //   title: 'Thinkful',
-  //   url: 'http://www.thinkful.com',
-  //   rating: '5',
-  //   desc: '1-on-1 learning to accelerate your way to a new high-growth tech career!'
-  // },
-  // {
-  //   id: 2,
-  //   title: 'Github',
-  //   url: 'http://www.github.com',
-  //   rating: '4',
-  //   desc: 'brings together the world\'s largest community of developers.'
-  // }
-];
 
 class App extends Component {
   state = {
-    bookmarks,
+    bookmarks: [],
     error: null,
   };
 
@@ -45,7 +24,7 @@ class App extends Component {
 
   addBookmark = bookmark => {
     this.setState({
-      bookmarks: [ ...this.state.bookmarks, bookmark ],
+      bookmarks: [...this.state.bookmarks, bookmark],
     })
   }
 
@@ -64,6 +43,9 @@ class App extends Component {
         return res.json()
       })
       .then(this.setBookmarks)
+      .then(responseData => {
+        this.context.updateArticle(responseData)
+      })
       .catch(error => this.setState({ error }))
   }
 
@@ -82,6 +64,10 @@ class App extends Component {
                 onClickCancel={() => history.push('/')}
               />
             }}
+          />
+          <Route
+            path='/edit/:bookmarkId'
+            component={EditBookmark}
           />
           <Route
             exact
